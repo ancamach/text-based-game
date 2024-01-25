@@ -5,7 +5,29 @@ def move_player(direction, current_loc, exits):
         print("You can't go that way.")
         return current_loc
     
+def get_item_from_command(command):
+    return command.split(" ", 1)[1] if len(command.split(" ")) > 1 else None
 
+inventory = []
+
+def battle():
+    print("A fierce monster appears!")
+    print("Prepare for battle!")
+
+    while True:
+        action = input("Choose your action (attack/flee): ").lower()
+
+        if action == "attack":
+            if "staff" in inventory:
+                print("You use your staff to cast a fireball at the monster!")
+                print("The monster is defeated!")
+                break
+        elif action == "flee":
+            print("You try to flee from the battle.")
+            print("You successfully fled from the battle.")
+            break
+
+    
 def main():
     locations = {
         "dark room": {
@@ -36,13 +58,15 @@ def main():
         "laboratory": {"west": "mystery room"},
         "balcony": {"south": "mystery room"}
     }
-    inventory = []
+
     current_location = "dark room"
     gameover = False
     door_locked = True
 
     print("Welcome to the Text Adventure Game!")
     input("Press enter to start...")
+    print("You wake up in a dark room. You don't remember how you got here, but you know you should look for a way to escape.")
+    print(locations[current_location]["description"])
 
     while not gameover:
         command = input("> ").lower()
@@ -60,10 +84,12 @@ def main():
                 locations[current_location]["items"].remove(item_name)
                 inventory.append(item_name)
                 print("You take the " + item_name)
+                if item_name == "magic broom":
+                    battle()
             else:
                 print("There is no " + item_name + " here.")
         elif command.startswith("use"):
-            item_to_use = command.split(" ", 1)[1]
+            item_to_use = get_item_from_command(command)
             if item_to_use in inventory:
                 if current_location == "mystery room" and item_to_use == "key":
                     print("You use the key to unlock the east door!")
